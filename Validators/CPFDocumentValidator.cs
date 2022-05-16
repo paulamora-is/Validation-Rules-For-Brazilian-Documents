@@ -15,40 +15,13 @@ namespace DocumentValidator.Validators
             _cPFDocument = new CPFDocumentEntity();
         }
 
-        public IEnumerable<int> SumDocumentValues(string cpfDocumentValue)
-        {
-            var resultsOfMultiplcationAllDigitsList = MultiplyDocumentValues(cpfDocumentValue);
-            var firstNineValuesList = resultsOfMultiplcationAllDigitsList.ToList().GetRange(0, 9);
-            var lastTenValuesList = resultsOfMultiplcationAllDigitsList.ToList().GetRange(9, 10);
-            int sumFirstNineValues = 0;
-            int sumLastTenValues = 0;
-            var resultOfSumsOfValuesList = new List<int>();
-
-            foreach (var resultFirstNineValues in firstNineValuesList)
-            {
-                sumFirstNineValues += resultFirstNineValues;
-            }
-            var ResultMultiplicationSumNineValues = sumFirstNineValues * 10;
-
-            foreach (var resultlastTenValues in lastTenValuesList)
-            {
-                sumLastTenValues += resultlastTenValues;
-            }
-            var ResultMultiplicationSumsumLastTenValues = sumLastTenValues * 10;
-
-            resultOfSumsOfValuesList.Add(ResultMultiplicationSumNineValues);
-            resultOfSumsOfValuesList.Add(ResultMultiplicationSumsumLastTenValues);
-
-            return resultOfSumsOfValuesList;
-        }
-
         public IEnumerable<int> MultiplyDocumentValues(string cpfDocumentValue)
         {
             var multiplierForTheFirstDigit = GetMultiplierForTheFirstDigit();
-            var resultsOfMultiplicationForTheFirstDigitList = new List<int>();
+            var resultsOfMultiplicationForTheFirstDigit = new List<int>();
 
             var multiplierForTheSecondDigit = GetMultiplierForTheSecondDigit();
-            var resultsOfMultiplicationForTheSecondDigitList = new List<int>();
+            var resultsOfMultiplicationForTheSecondDigit = new List<int>();
 
             if (!IsValidDocumentValue(cpfDocumentValue))
             {
@@ -59,19 +32,20 @@ namespace DocumentValidator.Validators
             {
                var multipliedValuesForTheFirstDigit = int.Parse(GetTheFirstNineDigits(cpfDocumentValue)[i].ToString()) * multiplierForTheFirstDigit[i];
 
-                resultsOfMultiplicationForTheFirstDigitList.Add(multipliedValuesForTheFirstDigit);
+                resultsOfMultiplicationForTheFirstDigit.Add(multipliedValuesForTheFirstDigit);
             }
 
             for(int i = 0; i < 10; i++)
             {
                 var multipliedValuesForTheSecondDigit = int.Parse(GetTheFirstTenDigits(cpfDocumentValue)[i].ToString()) * multiplierForTheSecondDigit[i];
 
-                resultsOfMultiplicationForTheSecondDigitList.Add(multipliedValuesForTheSecondDigit);
+                resultsOfMultiplicationForTheSecondDigit.Add(multipliedValuesForTheSecondDigit);
             }
             
-            var resultsOfMultiplcationAllDigitsList = resultsOfMultiplicationForTheFirstDigitList.Concat(resultsOfMultiplicationForTheSecondDigitList).ToList();
+            var resultsOfMultiplcationAllDigits = resultsOfMultiplicationForTheFirstDigit.Concat(resultsOfMultiplicationForTheSecondDigit).ToList();
 
-            return resultsOfMultiplcationAllDigitsList;
+            resultsOfMultiplcationAllDigits.ForEach(i => Console.Write("{0}\t", i));
+            return resultsOfMultiplcationAllDigits;
         }
 
         public bool IsValidDocumentValue(string cpfDocumentValue)
@@ -124,6 +98,7 @@ namespace DocumentValidator.Validators
                 return false;
             }
             return true;
+
         }
     }
 }
